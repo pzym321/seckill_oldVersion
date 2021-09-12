@@ -21,12 +21,22 @@ import java.lang.annotation.*;
         validatedBy = { IsMobileValidator.class}
 )
 public @interface IsMobile {
+
+    /**
+     * 要求手机号码是否为必填，默认为ture
+     * @return
+     */
     boolean required() default true;
 
+    /**
+     * 报错信息
+     * @return
+     */
     String message() default "手机号码格式错误";
 
     Class<?>[] groups() default {};
 
+    //没有payload()会报错
     Class<? extends Payload>[] payload() default {};
 
 }

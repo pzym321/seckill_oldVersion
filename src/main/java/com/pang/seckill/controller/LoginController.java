@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -19,7 +18,7 @@ import javax.validation.Valid;
  *
  * @Author: Pang ZhengYanMing
  * @Date: 2021/09/11/15:10
- * @Description: login
+ * @Description: 登录
  */
 @Controller
 @RequestMapping("/login")
@@ -37,7 +36,7 @@ public class LoginController {
     @RequestMapping("/doLogin")
     @ResponseBody
     public RespBean doLogin(@Valid LoginVo vo,HttpServletRequest request,HttpServletResponse response){
-        log.info("{}",vo);
+        //log.info("{}",vo);
        return userService.doLogin(vo,request,response);
     }
 }

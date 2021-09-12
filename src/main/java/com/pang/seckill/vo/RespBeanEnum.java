@@ -38,4 +38,6 @@ public enum RespBeanEnum {
     REQUEST_ILLEGAL(500502,"请求非法，请重新尝试");
     private final  Integer code;
     private final String message;
+
+
 }

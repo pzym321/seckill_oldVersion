@@ -13,9 +13,11 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
  * @Date: 2021/09/11/20:23
  * @Description: 全局异常处理类
  */
-@RestControllerAdvice
+@RestControllerAdvice//加rest意味返回的是responseBody
 public class GlobalExceptionHandler {
-    @ExceptionHandler
+
+    //ExceptionHandler(Exception.class): 需要处理异常的类
+    @ExceptionHandler(Exception.class)
     public RespBean ExceptionHandler(Exception e){
         if(e instanceof GlobalException){
             GlobalException ex = (GlobalException)e;
@@ -23,7 +25,7 @@ public class GlobalExceptionHandler {
         }else if(e instanceof BindException){
             BindException ex = (BindException)e;
             RespBean respBean = RespBean.error(RespBeanEnum.BIND_ERROR);
-            respBean.setMessage("参数校验异常："+ ex);
+            respBean.setMessage("参数校验异常："+ ex.getBindingResult().getAllErrors().get(0).getDefaultMessage());
             return respBean;
         }
         return RespBean.error(RespBeanEnum.ERROR);

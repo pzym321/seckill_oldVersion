@@ -19,6 +19,6 @@ public class LoginVo {
     @IsMobile
     private String mobile;
     @NotNull
-    @Length(min=32)
+    @Length(min=32) //md5加密后的密码为32位
     private String password;
 }

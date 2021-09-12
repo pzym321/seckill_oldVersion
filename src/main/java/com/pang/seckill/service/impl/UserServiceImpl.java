@@ -12,7 +12,9 @@ import com.pang.seckill.vo.LoginVo;
 import com.pang.seckill.vo.RespBean;
 import com.pang.seckill.vo.RespBeanEnum;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -30,6 +32,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
     @Autowired
     private UserMapper userMapper;
+    @Autowired
+    private RedisTemplate redisTemplate;
+
     @Override
     public RespBean doLogin(LoginVo vo, HttpServletRequest request, HttpServletResponse response) {
         String mobile = vo.getMobile();
@@ -47,17 +52,32 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
             throw new GlobalException(RespBeanEnum.LOGIN_ERROR);
         }
         //判断密码是否正确
+        //前端一次md5加密后的密码再次进行MD5加密，然后和数据库密码对比，不相同的话登录错误
         if (!MD5Util.formPassToDBPass(password,user.getSlat()).equals(user.getPassword())){
             throw new GlobalException(RespBeanEnum.LOGIN_ERROR);
         }
-        //生成cookie
+        //通过uuid工具类生成cookie
         String ticket = UUIDUtil.uuid();
+        //region 作废用户信息存入session方法，采用存入redis
         //把cookie作为key，user对象作为value存入session里
         request.getSession().setAttribute(ticket,user);
+        //endregion
+        redisTemplate.opsForValue().set("user:"+ticket,user);
         //设置cookie
         CookieUtil.setCookie(request,response,"userTicket",ticket);
-
         return RespBean.error(RespBeanEnum.SUCCESS);
+    }
+
+    @Override
+    public User getUserByCookie(String userTicket,HttpServletRequest request,HttpServletResponse response) {
+        if (StringUtils.isEmpty(userTicket)){
+            return null;
+        }
+        User user = (User) redisTemplate.opsForValue().get("user:" + userTicket);
+        if (user!=null){
+            CookieUtil.setCookie(request,response,"userTicket",userTicket);
+        }
+        return user;
     }
 
 }
