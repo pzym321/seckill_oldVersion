@@ -1,0 +1,56 @@
+package com.pang.seckill.pojo;
+
+import java.math.BigDecimal;
+import com.baomidou.mybatisplus.annotation.TableName;
+import java.util.Date;
+import java.io.Serializable;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+/**
+ * <p>
+ * 
+ * </p>
+ *
+ * @author Pang ZhengYanMing
+ * @since 2021-09-13
+ */
+@Data
+@EqualsAndHashCode(callSuper = false)
+@TableName("t_seckill_goods")
+public class SeckillGoods implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * 秒杀商品ID
+     */
+    private Long id;
+
+    /**
+     * 商品ID
+     */
+    private Long goodsId;
+
+    /**
+     * 秒杀价
+     */
+    private BigDecimal seckillPrice;
+
+    /**
+     * 商品库存
+     */
+    private Integer stockCount;
+
+    /**
+     * 秒杀开始时间
+     */
+    private Date startDate;
+
+    /**
+     * 秒杀结束时间
+     */
+    private Date endDate;
+
+
+}
