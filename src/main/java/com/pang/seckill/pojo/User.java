@@ -28,9 +28,9 @@ public class User implements Serializable {
      * 用户id为手机号码
      */
 
+    @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
-    @TableId(value = "id", type = IdType.AUTO)
     private String nickname;
 
     /**

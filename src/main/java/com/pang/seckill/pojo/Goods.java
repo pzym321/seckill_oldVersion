@@ -1,10 +1,13 @@
 package com.pang.seckill.pojo;
 
-import java.math.BigDecimal;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import java.io.Serializable;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
+import java.io.Serializable;
+import java.math.BigDecimal;
 
 /**
  * <p>
@@ -24,6 +27,7 @@ public class Goods implements Serializable {
     /**
      * 商品ID
      */
+    @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
     /**

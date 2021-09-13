@@ -1,9 +1,12 @@
 package com.pang.seckill.pojo;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import java.io.Serializable;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
+import java.io.Serializable;
 
 /**
  * <p>
@@ -23,6 +26,7 @@ public class SeckillOrder implements Serializable {
     /**
      * 秒杀订单ID
      */
+    @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
     /**

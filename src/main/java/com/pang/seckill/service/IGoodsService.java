@@ -1,7 +1,10 @@
 package com.pang.seckill.service;
 
-import com.pang.seckill.pojo.Goods;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.pang.seckill.pojo.Goods;
+import com.pang.seckill.vo.GoodsVo;
+
+import java.util.List;
 
 /**
  * <p>
@@ -13,4 +16,16 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface IGoodsService extends IService<Goods> {
 
+    /**
+     * 获取商品列表
+     * @return
+     */
+    List<GoodsVo> findGoodsVo();
+
+    /**
+     * 获取商品详情
+     * @param id
+     * @return
+     */
+    GoodsVo findGoodsVoByGoodsId(Long id);
 }
