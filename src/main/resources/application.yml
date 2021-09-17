@@ -25,6 +25,8 @@ spring:
       connection-timeout: 30000
       # 测试连接是否可用语句
       connection-test-query: SELECT 1
+
+  # redis设置
   redis:
     host: 127.0.0.1
     port: 6379
