@@ -60,12 +60,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         //通过uuid工具类生成cookie
         String ticket = UUIDUtil.uuid();
         System.out.println(ticket);
-        //region 作废用户信息存入session方法，采用存入redis
         //把cookie作为key，user对象作为value存入session里
         HttpSession session = request.getSession();
         session.setAttribute(ticket, user);
         session.setMaxInactiveInterval(3600*10);//10 hours
-        //endregion
         redisTemplate.opsForValue().set("user:" + ticket, user);
         //设置cookie
         CookieUtil.setCookie(request, response, "userTicket", ticket);
