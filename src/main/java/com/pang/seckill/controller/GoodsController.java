@@ -34,9 +34,9 @@ public class GoodsController {
     /**
      * 跳转商品列表页面
      *
-     * jmeter 1万线程循环3次*3
+     * jmeter 1000线程程循环10次测3组，样本数30000
      * mac端优化前QPS:864
-     * linux端优化前QPS:207
+     * linux端(2核2G)优化前QPS:207
      *
      * @param
      * @param model

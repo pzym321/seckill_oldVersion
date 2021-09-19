@@ -31,26 +31,26 @@ public class UserUtil {
             user.setLoginCount(1);
             user.setNickname("user" + i);
             user.setRegisterDate(new Date());
-            user.setSlat("1a2b3c");
-            user.setPassword(MD5Util.inputPassToDBPass("123456", user.getSlat()));
+            user.setSalt("1a2b3c4d");
+            user.setPassword(MD5Util.inputPassToDBPass("123456", user.getSalt()));
             users.add(user);
         }
         System.out.println("create user");
         //插入数据库
         Connection conn = getConn();
-        String sql = "insert into t_user(login_count, username, register_date, salt, password, id)values(?,?,?,?,?,?)";
+        String sql = "insert into t_user(login_count, nickname, register_date, salt, password, id)values(?,?,?,?,?,?)";
         PreparedStatement pstmt = conn.prepareStatement(sql);
         for (int i = 0; i < users.size(); i++) {
             User user = users.get(i);
             pstmt.setInt(1, user.getLoginCount());
             pstmt.setString(2, user.getNickname());
             pstmt.setTimestamp(3, new Timestamp(user.getRegisterDate().getTime()));
-            pstmt.setString(4, user.getSlat());
+            pstmt.setString(4, user.getSalt());
             pstmt.setString(5, user.getPassword());
             pstmt.setLong(6, user.getId());
             pstmt.addBatch();
         }
-        pstmt.executeBatch();
+        pstmt.executeBatch();//数据作批量和更新
         pstmt.close();
         conn.close();
         System.out.println("insert to db");
@@ -70,8 +70,7 @@ public class UserUtil {
             co.setRequestMethod("POST");
             co.setDoOutput(true);
             OutputStream out = co.getOutputStream();
-            String params = "mobile=" + user.getId() + "&password=" +
-                    MD5Util.inputPassToFromPass("123456");
+            String params = "mobile=" + user.getId() + "&password=" + MD5Util.inputPassToFromPass("123456");
             out.write(params.getBytes());
             out.flush();
             InputStream inputStream = co.getInputStream();

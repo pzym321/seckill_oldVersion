@@ -16,7 +16,6 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -55,7 +54,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         }
         //判断密码是否正确
         //前端一次md5加密后的密码再次进行MD5加密，然后和数据库密码对比，不相同的话登录错误
-        if (!MD5Util.formPassToDBPass(password, user.getSlat()).equals(user.getPassword())) {
+        if (!MD5Util.formPassToDBPass(password, user.getSalt()).equals(user.getPassword())) {
             throw new GlobalException(RespBeanEnum.LOGIN_ERROR);
         }
         //通过uuid工具类生成cookie
@@ -68,7 +67,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         redisTemplate.opsForValue().set("user:" + ticket, user);
         //设置cookie
         CookieUtil.setCookie(request, response, "userTicket", ticket);
-        return RespBean.error(RespBeanEnum.SUCCESS);
+        return RespBean.success(ticket);
     }
 
     @Override
