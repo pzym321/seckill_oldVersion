@@ -33,6 +33,11 @@ public class GoodsController {
 
     /**
      * 跳转商品列表页面
+     *
+     * jmeter 1万线程循环3次*3
+     * mac端优化前QPS:864
+     * linux端优化前QPS:207
+     *
      * @param
      * @param model
      * @param
