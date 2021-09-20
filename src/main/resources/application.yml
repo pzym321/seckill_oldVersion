@@ -1,5 +1,4 @@
 spring:
-  # thymeleaf配置
   thymeleaf:
     # 不可缓存
     cache: false

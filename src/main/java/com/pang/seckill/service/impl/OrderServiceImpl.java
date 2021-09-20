@@ -1,6 +1,7 @@
 package com.pang.seckill.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.pang.seckill.mapper.OrderMapper;
 import com.pang.seckill.pojo.Order;
@@ -13,7 +14,9 @@ import com.pang.seckill.service.ISeckillOrderService;
 import com.pang.seckill.vo.GoodsVo;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 
@@ -33,13 +36,21 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     private OrderMapper orderMapper;
     @Autowired
     private ISeckillOrderService seckillOrderService;
+    @Autowired
+    private RedisTemplate redisTemplate;
 
     @Override
+    @Transactional
     public Order seckill(User user, GoodsVo goodsVo) {
         //秒杀商品表减库存
-        SeckillGoods seckillGoods = seckillGoodsService.getOne(new QueryWrapper<SeckillGoods>()
-                .eq("goods_id", goodsVo.getId()));
+        SeckillGoods seckillGoods = seckillGoodsService.getOne(new QueryWrapper<SeckillGoods>().eq("goods_id", goodsVo.getId()));
         seckillGoods.setStockCount(seckillGoods.getStockCount() - 1);
+        boolean result = seckillGoodsService.update(new UpdateWrapper<SeckillGoods>()
+                .setSql("stock_count = stock_count-1 ").eq("goods_id", goodsVo.getId()).gt("stock_count", 0));
+
+        if (!result){
+            return null;
+        }
         seckillGoodsService.updateById(seckillGoods);
 
         //生成订单
@@ -60,8 +71,8 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         seckillOrder.setOrderId(order.getId());
         seckillOrder.setUserId(user.getId());
         seckillOrder.setGoodsId(goodsVo.getId());
-        System.out.println(seckillOrder);
         seckillOrderService.save(seckillOrder);
+        redisTemplate.opsForValue().set("order:" + user.getId() + ":" + goodsVo.getId(),seckillOrder);
         return order;
     }
 }

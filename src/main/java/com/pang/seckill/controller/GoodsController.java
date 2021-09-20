@@ -2,19 +2,23 @@ package com.pang.seckill.controller;
 
 import com.pang.seckill.pojo.User;
 import com.pang.seckill.service.IGoodsService;
-import com.pang.seckill.service.IUserService;
 import com.pang.seckill.vo.GoodsVo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.thymeleaf.context.WebContext;
+import org.thymeleaf.spring5.view.ThymeleafViewResolver;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created with IntelliJ IDEA.
@@ -27,37 +31,53 @@ import java.util.Date;
 @RequestMapping("/goods")
 public class GoodsController {
     @Autowired
-    private IUserService userService;
+    private RedisTemplate redisTemplate;
     @Autowired
     private IGoodsService goodsService;
+    @Autowired
+    private ThymeleafViewResolver thymeleafViewResolver;
 
     /**
-     * 跳转商品列表页面
+     * 跳转商品列表页面 页面缓存
      * @param
      * @param model
      * @param
      * @return
      */
-    @RequestMapping("/toList")
-    public String toList(Model model,User user){
+    @RequestMapping(value = "/toList",produces = "text/html;charset=utf-8")
+    @ResponseBody
+    public String toList(Model model,User user,HttpServletRequest request,HttpServletResponse response){
+        ValueOperations valueOperations = redisTemplate.opsForValue();
+        String html = (String) valueOperations.get("goodsList");
+        if (!StringUtils.isEmpty(html)){
+            return html;
+        }
         model.addAttribute("user",user);
         model.addAttribute("goodsList",goodsService.findGoodsVo());
-        return "goodsList";
+        WebContext context = new WebContext(request, response,
+                request.getServletContext(), request.getLocale(),model.asMap());
+        html = thymeleafViewResolver.getTemplateEngine().process("goodsList", context);
+        if (!StringUtils.isEmpty(html)){
+            valueOperations.set("goodsList",html,1, TimeUnit.MINUTES);
+        }
+        return html;
     }
-//    public String toList1(HttpServletRequest request, HttpServletResponse response, Model model, @CookieValue("userTicket") String ticket){
-//        if (StringUtils.isEmpty(ticket)){
-//            return "login";
-//        }
-//        User user = userService.getUserByCookie(ticket, request, response);
-//        if (null==user){
-//            return "login";
-//        }
-//        model.addAttribute("user",user);
-//        return "goodsList";
-//    }
 
-    @RequestMapping("toDetail/{goodsId}")
-    public String toDetail(@PathVariable("goodsId")Long id,Model model,User user){
+    /**
+     * 页面缓存
+     * @param id
+     * @param model
+     * @param user
+     * @return
+     */
+    @RequestMapping(value = "toDetail/{goodsId}",produces = "text/html;charset=utf-8")
+    @ResponseBody
+    public String toDetail(@PathVariable("goodsId")Long id,Model model,User user,HttpServletRequest request,HttpServletResponse response){
+        ValueOperations valueOperations = redisTemplate.opsForValue();
+        String html = (String) valueOperations.get("goodsDetail:" + id);
+        if (!StringUtils.isEmpty(html)){
+            return html;
+        }
         //秒杀状态
         int seckillStatus=0;
         //秒杀倒计时
@@ -81,6 +101,13 @@ public class GoodsController {
         model.addAttribute("seckillStatus",seckillStatus);
         model.addAttribute("user",user);
         model.addAttribute("goods",goodsVo);
-        return "goodsDetail";
+
+        WebContext context = new WebContext(request, response,
+                request.getServletContext(), request.getLocale(),model.asMap());
+        html = thymeleafViewResolver.getTemplateEngine().process("goodsDetail", context);
+        if (!StringUtils.isEmpty(html)){
+            valueOperations.set("goodsDetail:"+id,html,1, TimeUnit.MINUTES);
+        }
+        return html;
     }
 }
