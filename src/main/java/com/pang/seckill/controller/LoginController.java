@@ -21,19 +21,23 @@ import javax.validation.Valid;
  * @Description: 登录
  */
 @Controller
-@RequestMapping("/login")
 @Slf4j
 public class LoginController {
 
     @Autowired
     private IUserService userService;
 
-    @RequestMapping("/toLogin")
+    @RequestMapping("/")
+    public String index(){
+        return "login";
+    }
+
+    @RequestMapping("/login/toLogin")
     public String toLogin(){
         return "login";
     }
 
-    @RequestMapping("/doLogin")
+    @RequestMapping("/login/doLogin")
     @ResponseBody
     public RespBean doLogin(@Valid LoginVo vo,HttpServletRequest request,HttpServletResponse response){
         //log.info("{}",vo);

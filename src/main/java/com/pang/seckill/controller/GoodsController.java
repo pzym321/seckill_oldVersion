@@ -38,7 +38,16 @@ public class GoodsController {
     private ThymeleafViewResolver thymeleafViewResolver;
 
     /**
+<<<<<<< HEAD
      * 跳转商品列表页面 页面缓存
+=======
+     * 跳转商品列表页面
+     *
+     * jmeter 1000线程程循环10次测3组，样本数30000
+     * mac端优化前QPS:864
+     * linux端(2核2G)优化前QPS:207
+     *
+>>>>>>> refs/remotes/origin/master
      * @param
      * @param model
      * @param

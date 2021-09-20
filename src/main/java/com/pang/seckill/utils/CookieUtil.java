@@ -22,8 +22,7 @@ public class CookieUtil {
      * @param cookieName
      * @return
      */
-    public static String getCookieValue(HttpServletRequest request, String
-            cookieName) {
+    public static String getCookieValue(HttpServletRequest request, String cookieName) {
         return getCookieValue(request, cookieName, false);
     }
 
@@ -34,8 +33,7 @@ public class CookieUtil {
      * @param cookieName
      * @return
      */
-    public static String getCookieValue(HttpServletRequest request, String
-            cookieName, boolean isDecoder) {
+    public static String getCookieValue(HttpServletRequest request, String cookieName, boolean isDecoder) {
         Cookie[] cookieList = request.getCookies();
         if (cookieList == null || cookieName == null) {
             return null;
@@ -45,8 +43,7 @@ public class CookieUtil {
             for (int i = 0; i < cookieList.length; i++) {
                 if (cookieList[i].getName().equals(cookieName)) {
                     if (isDecoder) {
-                        retValue = URLDecoder.decode(cookieList[i].getValue(),
-                                "UTF-8");
+                        retValue = URLDecoder.decode(cookieList[i].getValue(), "UTF-8");
                     } else {
                         retValue = cookieList[i].getValue();
                     }
@@ -66,8 +63,7 @@ public class CookieUtil {
      * @param cookieName
      * @return
      */
-    public static String getCookieValue(HttpServletRequest request, String
-            cookieName, String encodeString) {
+    public static String getCookieValue(HttpServletRequest request, String cookieName, String encodeString) {
         Cookie[] cookieList = request.getCookies();
         if (cookieList == null || cookieName == null) {
             return null;
@@ -90,9 +86,9 @@ public class CookieUtil {
     /**
      * 设置Cookie的值 不设置生效时间默认浏览器关闭即失效,也不编码
      */
-    public static void setCookie(HttpServletRequest request, HttpServletResponse
-            response, String cookieName,
-                                 String cookieValue) {
+    public static void setCookie(HttpServletRequest request,
+                                 HttpServletResponse response,
+                                 String cookieName, String cookieValue) {
         setCookie(request, response, cookieName, cookieValue, -1);
     }
 
@@ -102,8 +98,7 @@ public class CookieUtil {
     public static void setCookie(HttpServletRequest request, HttpServletResponse
             response, String cookieName,
                                  String cookieValue, int cookieMaxage) {
-        setCookie(request, response, cookieName, cookieValue, cookieMaxage,
-                false);
+        setCookie(request, response, cookieName, cookieValue, cookieMaxage, false);
     }
 
 //    设置Cookie的值 不设置生效时间, 但编码
@@ -120,8 +115,7 @@ public class CookieUtil {
      */
     public static void setCookie(HttpServletRequest request, HttpServletResponse
             response, String cookieName,
-                                 String cookieValue, int cookieMaxage, boolean
-                                         isEncode) {
+                                 String cookieValue, int cookieMaxage, boolean isEncode) {
         doSetCookie(request, response, cookieName, cookieValue, cookieMaxage,
                 isEncode);
     }
@@ -168,7 +162,7 @@ public class CookieUtil {
             if (null != request) {// 设置域名的cookie
                 String domainName = getDomainName(request);
               //  System.out.println(domainName);
-                if (!"localhost".equals(domainName)) {
+                if (!"10.211.55.4".equals(domainName)) {
                     cookie.setDomain(domainName);
                 }
             }
@@ -201,7 +195,7 @@ public class CookieUtil {
             if (null != request) {// 设置域名的cookie
                 String domainName = getDomainName(request);
                // System.out.println(domainName);
-                if (!"localhost".equals(domainName)) {
+                if (!"10.211.55.4".equals(domainName)) {
                     cookie.setDomain(domainName);
                 }
             }

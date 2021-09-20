@@ -32,6 +32,16 @@ public class SeckillController {
     @Autowired
     private RedisTemplate redisTemplate;
 
+    /**
+     * jmeter 1000线程程循环10次测3组，样本数30000，goodsId=1
+     * mac端优化前QPS:469
+     * linux端(2核2G)优化前QPS:170
+     *
+     * @param model
+     * @param user
+     * @param goodsId
+     * @return
+     */
     @RequestMapping("/doSeckill")
     public String doSeckill(Model model, User user, Long goodsId){
         if (user==null){

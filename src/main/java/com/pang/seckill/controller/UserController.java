@@ -17,11 +17,13 @@ import org.springframework.web.bind.annotation.RestController;
  * @since 2021-09-11
  */
 @Controller
+@RequestMapping("/user")
 public class UserController {
-    @RequestMapping("/")
-    public String index(){
-        return "login";
-    }
+    /**
+     * 用户信息--测试
+     * @param user
+     * @return
+     */
     @ResponseBody
     @RequestMapping("/info")
     public RespBean info(User user){

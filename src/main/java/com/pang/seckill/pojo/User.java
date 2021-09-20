@@ -38,7 +38,7 @@ public class User implements Serializable {
      */
     private String password;
 
-    private String slat;
+    private String salt;
 
     /**
      * 头像
